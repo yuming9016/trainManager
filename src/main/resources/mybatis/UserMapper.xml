@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.mrj.trainmanager.mapper.UserMapper">
+
+    <resultMap id="UserMap" type="org.mrj.trainmanager.domain.entity.UserDO">
+        <id property="id" jdbcType="BIGINT" column="id"/>
+        <result property="name" jdbcType="VARCHAR" column="name"/>
+        <result property="password" jdbcType="VARCHAR" column="password"/>
+        <result property="status" jdbcType="VARCHAR" column="status"/>
+    </resultMap>
+
+    <select id="getUserById" resultMap="UserMap">/*这里UserMap是sql的返回值，与上面对应*/
+        select * from user
+        where id = #{id}
+        limit 1
+    </select>
+
+    <select id="getUserByNameAndPassword" resultMap="UserMap">
+        select * from user
+        where name = #{name}
+        and password = #{password}
+    </select>
+
+    <update id="updatePasswordById">
+        UPDATE `user`
+        SET `password` = #{password}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatusById">
+        UPDATE `user`
+        SET `status` = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="getPasswordById" resultType="java.lang.String">
+        SELECT `password` FROM `user`
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insertUser" parameterType="org.mrj.trainmanager.domain.entity.UserDO">
+        insert into `user`
+        (`name`,`password`,`status`)
+        values
+        (#{name},#{password},#{status})
+    </insert>
+
+    <select id="getIdByName" resultType="long">
+        SELECT id FROM `user`
+        WHERE `name` = #{name}
+        limit 1
+    </select>
+
+    <insert id="insertRoleId" >
+        insert into `user_role`
+        (user_id,role_id)
+        values
+        (#{id},#{roleId})
+    </insert>
+
+    <select id="checkUser" resultMap="UserMap">
+        select * from user
+        where name = #{name}
+    </select>
+
+    <select id="getRoleIdById" resultType="long">
+        SELECT role_id FROM `user_role`
+        WHERE user_id = #{id}
+        GROUP BY role_id
+    </select>
+
+    <select id="selectAllUserByPage" resultMap="UserMap">
+        SELECT
+	        id,
+	        `name`,
+	        `status`
+        FROM `user`
+        WHERE `name` like CONCAT('%',#{name},'%')
+        LIMIT #{pageNum},#{pageSize}
+    </select>
+    <select id="getTotal" resultType="java.lang.Long">
+        select count(*) from `user`
+    </select>
+
+    <!--为了使用后端分页舍弃了-->
+    <select id="selectAllUser" resultMap="UserMap">
+        SELECT
+	        id,
+	        `name`,
+	        `status`
+        FROM `user`
+    </select>
+
+    <delete id="deleteUserById" >
+        DELETE FROM `user`
+        WHERE id = #{id}
+    </delete>
+
+
+
+
+</mapper>

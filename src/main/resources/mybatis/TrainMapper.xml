@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.mrj.trainmanager.mapper.TrainMapper">
+
+    <resultMap id="TrainTimeMap" type="org.mrj.trainmanager.domain.entity.TrainDO">
+        <id property="id" jdbcType="BIGINT" column="id"/>
+        <result property="trainNumber" jdbcType="VARCHAR" column="train_number"/>
+        <result property="stationName" jdbcType="VARCHAR" column="station_name"/>
+        <result property="arrivalTime" jdbcType="TIMESTAMP" column="arrival_time"/>
+        <result property="departureTime" jdbcType="TIMESTAMP" column="departure_time"/>
+        <result property="date" jdbcType="DATE" column="date"/>
+        <result property="isOriginalStation" jdbcType="TINYINT" column="is_original_station"/>
+        <result property="isMiddleStation" jdbcType="TINYINT" column="is_middle_station"/>
+        <result property="isEndStation" jdbcType="TINYINT" column="is_end_station"/>
+        <result property="outageOrNot" jdbcType="TINYINT" column="outage_or_not"/>
+
+
+    </resultMap>
+
+    <select id="getTrainTimeByTrainNumber" resultMap="TrainTimeMap">
+        SELECT
+	        *
+        FROM `train_time`
+        WHERE train_number like CONCAT('%',#{trainNumber},'%')
+        order by arrival_time desc
+        LIMIT #{pageNum},#{pageSize}
+
+    </select>
+    <select id="getTotal" resultType="java.lang.Long">
+        select count(*) from `train_time`
+    </select>
+
+    <select id="getTrainTimeById" resultMap="TrainTimeMap">
+        SELECT * FROM `train_time`
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insertTrainTime" parameterType="org.mrj.trainmanager.domain.param.TrainParam">
+        insert into `train_time`
+        (`train_number`,`station_name`,`arrival_time`,`departure_time`,`date`,
+        `is_original_station`,`is_end_station`,`is_middle_station`,`outage_or_not`)
+        values
+        (#{trainNumber},#{stationName},#{arrivalTime},#{departureTime},#{date},
+        #{isOriginalStation},#{isEndStation},#{isMiddleStation},#{outageOrNot})
+    </insert>
+
+    <delete id="deleteTrainTime" >
+        DELETE FROM `train_time`
+        WHERE train_number = #{trainNumber} AND station_name = #{stationName} AND arrival_time = #{arrivalTime}
+    </delete>
+    <delete id="deleteTrainTimeById">
+        DELETE FROM `train_time`
+        WHERE id = #{id}
+    </delete>
+
+
+    <update id="updateTrainTime">
+        UPDATE `train_time`
+        SET
+	        train_number = #{trainNumber},
+	        station_name = #{stationName},
+	        arrival_time = #{arrivalTime},
+	        departure_time = #{departureTime},
+	        date = #{date},
+	        is_original_station = #{isOriginalStation},
+	        is_end_station = #{isEndStation},
+	        is_middle_station = #{isMiddleStation},
+	        outage_or_not = #{outageOrNot}
+
+        WHERE
+	        id = #{id}
+    </update>
+
+    <select id="getTrainTimeByStationName" resultMap="TrainTimeMap">
+        SELECT * FROM `train_time`
+        WHERE station_name LIKE CONCAT('%',#{stationName},'%')
+        GROUP BY arrival_time
+        LIMIT #{pageNum},#{pageSize}
+    </select>
+
+    <select id="getAllTrainTimeByStationName" resultMap="TrainTimeMap">
+        SELECT * FROM `train_time`
+        WHERE station_name LIKE CONCAT('%',#{stationName},'%')
+        GROUP BY arrival_time
+    </select>
+
+    <select id="getTrainTimeEndBySTS" resultMap="TrainTimeMap">
+        SELECT
+        t2.id,
+        t2.train_number,
+        t2.station_name,
+        t2.arrival_time,
+        t2.departure_time,
+        t2.date,
+        t2.outage_or_not
+        FROM `train_time` t1 , `train_time` t2
+        WHERE t1.station_name = #{stationStartName} and t2.station_name = #{stationEndName}
+        AND t1.arrival_time &lt; t2.arrival_time AND t1.train_number = t2.train_number
+        GROUP BY t1.arrival_time
+        LIMIT #{pageNum},#{pageSize}
+    </select>
+
+    <select id="getTrainTimeStartBySTS" resultMap="TrainTimeMap">
+        SELECT
+        t1.id,
+        t1.train_number,
+        t1.station_name,
+        t1.arrival_time,
+        t1.departure_time,
+        t1.date,
+        t1.outage_or_not
+        FROM `train_time` t1 , `train_time` t2
+        WHERE t1.station_name = #{stationStartName} and t2.station_name = #{stationEndName}
+        AND t1.arrival_time &lt; t2.arrival_time AND t1.train_number = t2.train_number
+        GROUP BY t1.arrival_time
+        LIMIT #{pageNum},#{pageSize}
+    </select>
+</mapper>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.mrj.trainmanager.mapper.TrainInfoMapper">
+
+    <resultMap id="TrainInfoMap" type="org.mrj.trainmanager.domain.entity.TrainInfoDO">
+        <id property="id" jdbcType="BIGINT" column="id"/>
+        <result property="trainName" jdbcType="VARCHAR" column="train_name"/>
+        <result property="railwayCarriageNumber" jdbcType="BIGINT" column="railway_carriage_number"/>
+        <result property="seatNumber" jdbcType="BIGINT" column="seat_number"/>
+        <result property="factoryTime" jdbcType="TIMESTAMP" column="factory_time"/>
+        <result property="status" jdbcType="VARCHAR" column="status"/>
+
+
+    </resultMap>
+
+    <select id="selectAllTrainInfo" resultMap="TrainInfoMap">
+        SELECT
+	        id,
+	        `train_name`,
+	        `railway_carriage_number`,
+	        `seat_number`,
+	        `factory_time`,
+	        `status`
+        FROM `train_information`
+        WHERE train_name like CONCAT('%',#{trainName},'%')
+        order by factory_time desc
+        LIMIT #{pageNum},#{pageSize}
+
+    </select>
+    <select id="getTotal" resultType="java.lang.Long">
+        select count(*) from `train_information`
+    </select>
+
+    <select id="getTrainInfoById" resultMap="TrainInfoMap">
+        SELECT * FROM `train_information`
+        WHERE id = #{id}
+    </select>
+
+    <select id="checkTrainInfo" resultMap="TrainInfoMap">
+        select * from `train_information`
+        where train_name = #{trainName}
+    </select>
+
+    <insert id="insertTrainInfo" >
+        insert into `train_information`
+        (
+	        `train_name`,
+	        `railway_carriage_number`,
+	        `seat_number`,
+	        `factory_time`,
+	        `status`)
+        values
+        (#{trainName},#{railwayCarriageNumber},#{seatNumber},#{factoryTime},#{status})
+    </insert>
+
+    <delete id="deleteTrainInfoById" >
+        DELETE FROM `train_information`
+        WHERE id = #{id}
+    </delete>
+
+    <update id="updateTrainInfo">
+        UPDATE `train_information`
+        SET
+	        train_name = #{trainName},
+	        railway_carriage_number = #{railwayCarriageNumber},
+	        seat_number = #{seatNumber},
+	        factory_time = #{factoryTime},
+	        status = #{status}
+
+        WHERE
+	        id = #{id}
+    </update>
+
+</mapper>

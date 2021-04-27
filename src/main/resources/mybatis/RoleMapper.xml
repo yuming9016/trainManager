@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.mrj.trainmanager.mapper.RoleMapper">
+
+    <resultMap id="RoleMap" type="org.mrj.trainmanager.domain.entity.RoleDO">
+        <id property="id" jdbcType="BIGINT" column="id"/>
+        <result property="role" jdbcType="VARCHAR" column="role"/>
+    </resultMap>
+
+    <select id="getRoleByRoleId" resultType="java.lang.String">
+        SELECT role FROM `role`
+        WHERE id = #{roleId}
+    </select>
+
+    <delete id="deleteRoleIdByUserId" >
+        DELETE FROM `user_role`
+        WHERE user_id = #{userId}
+    </delete>
+
+    <delete id="removeRoleIdByUserId">
+        DELETE FROM `user_role`
+        WHERE user_id = #{userId} AND role_id = #{roleId}
+    </delete>
+
+</mapper>

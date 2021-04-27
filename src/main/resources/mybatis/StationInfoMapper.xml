@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.mrj.trainmanager.mapper.StationInfoMapper">
+
+    <resultMap id="StationInfoMap" type="org.mrj.trainmanager.domain.entity.StationInfoDO">
+        <id property="id" jdbcType="BIGINT" column="id"/>
+        <result property="stationName" jdbcType="VARCHAR" column="station_name"/>
+        <result property="peopleOnDuty" jdbcType="VARCHAR" column="people_on_duty"/>
+        <result property="serviceTelephone" jdbcType="VARCHAR" column="service_telephone"/>
+
+
+    </resultMap>
+
+    <select id="selectAllStationInfo" resultMap="StationInfoMap">
+        SELECT
+	        id,
+	        `station_name`,
+	        `people_on_duty`,
+	        `service_telephone`
+        FROM `station_information`
+        WHERE station_name like CONCAT('%',#{stationName},'%')
+        LIMIT #{pageNum},#{pageSize}
+    </select>
+    <select id="getTotal" resultType="java.lang.Long">
+        select count(*) from `station_information`
+    </select>
+
+    <select id="getStationInfoById" resultMap="StationInfoMap">
+        SELECT * FROM `station_information`
+        WHERE id = #{id}
+    </select>
+
+    <select id="checkStationInfo" resultMap="StationInfoMap">
+        select * from `station_information`
+        where station_name = #{stationName}
+    </select>
+
+    <insert id="insertStationInfo" >
+        insert into `station_information`
+        (
+	        `station_name`,
+	        `people_on_duty`,
+	        `service_telephone`)
+        values
+        (#{stationName},#{peopleOnDuty},#{serviceTelephone})
+    </insert>
+
+    <delete id="deleteStationInfoById" >
+        DELETE FROM `station_information`
+        WHERE id = #{id}
+    </delete>
+
+    <update id="updateStationInfo">
+        UPDATE `station_information`
+        SET
+	        station_name = #{stationName},
+	        people_on_duty = #{peopleOnDuty},
+	        service_telephone = #{serviceTelephone}
+        WHERE
+	        id = #{id}
+    </update>
+
+
+</mapper>

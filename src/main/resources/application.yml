@@ -1,0 +1,25 @@
+# 设置端口
+server:
+  port: 8081
+
+# 设置连接池
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: root
+    password: root
+    url: jdbc:mysql://localhost/trainmanager?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# 设置mybatis
+mybatis:
+  type_aliases-package: trainmanager.domain    # 别名
+  mapper-locations: classpath:/mybatis/*.xml   # xml文件
+  configuration:  # 打印 mybatis 日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    cache-enabled: true
+
+
+
+
+
